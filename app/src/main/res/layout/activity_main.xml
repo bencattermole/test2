@@ -20,7 +20,7 @@
             android:layout_width="389dp"
             android:layout_height="53dp"
             android:baselineAligned="false"
-            android:text="Orientation"
+            android:text="@string/orientation"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -390,6 +390,42 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/testLat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Lat"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.191"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.591" />
+
+        <TextView
+            android:id="@+id/testLong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test Long"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.533"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.591" />
+
+        <TextView
+            android:id="@+id/gmt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="GMT Time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.884"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.591" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

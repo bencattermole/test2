@@ -1,4 +1,4 @@
-package uea.ac.uk.shake2021;
+package uea.ac.uk.SmartTelescope_V1;
 
 import org.junit.Test;
 
