@@ -1,0 +1,3 @@
+name = 'Big Star'
+azimuth = '0.33344'
+altitude = '0.45544'

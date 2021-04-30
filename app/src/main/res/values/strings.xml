@@ -3,4 +3,23 @@
     <string name="action_settings">Settings</string>
     <string name="switch_color">Shake to switch color</string>
     <string name="orientation">Orientation</string>
+    <string name="title_activity_home__page">Home_Page</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="textview">TextView</string>
+    <string name="smart_telescope_app">Smart Telescope App</string>
+    <string name="the_current_time_is">The Current Time is -</string>
+    <string name="time">time</string>
+    <string name="intro">Please select a star you would like to see below</string>
+    <string name="intro1">To calibrate your phone, you will have to first face true north</string>
+    <string name="intro2">Turn in the plain of the ground and then face upwards</string>
+    <string name="dropDown">Click here for list of Stars</string>
+    <string name="Previous">Previous Searches</string>
+
 </resources>
