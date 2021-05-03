@@ -16,6 +16,8 @@ import java.io.InputStream;
 public class Star_Info extends AppCompatActivity {
 
     private TextView reading;
+    private TextView choice;
+    private TextView title;
     private String file = "myFile";
     private String fileContents;
     private Button cont;
@@ -26,8 +28,24 @@ public class Star_Info extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_star__info);
 
+        Bundle extras = getIntent().getExtras();
+
+        String str = extras.getString("messageKey");
+        System.out.println("The sent string" + str);
+
+        String realName = getName(str);
+        System.out.println("Real name" + realName);
+
+        //Setting the page name
+
+        StringBuilder s = new StringBuilder(str);
+        s.append(" Informaiton Page");
+        String userChoice = s.toString();
+        title = findViewById(R.id.title);
+        title.setText(userChoice);
+
         reading = findViewById(R.id.info);
-        readingIn("star1");
+        readingIn(realName);
         cont = findViewById(R.id.cont);
         cont.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,9 +61,19 @@ public class Star_Info extends AppCompatActivity {
                 startActivity(new Intent(Star_Info.this, index.class));
             }
         });
+
+
     }
 
-    ;
+    private String getName(String fileName){
+        String txtName = "";
+        if (fileName.equals("Star 1")) {
+            txtName = "star1";
+        } else if (fileName.equals("Star 2")) {
+            txtName = "star2";
+        }
+        return txtName;
+    };
 
 
     public void readingIn(String fileName) {

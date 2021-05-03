@@ -39,18 +39,21 @@ public class index extends AppCompatActivity {
         fillList();
 
         //Get spinner text
-        String selection = dropdown.getSelectedItem().toString();
+
 
         //Setting the action with the Select button
         select = findViewById(R.id.button2);
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = null;
-                if (selection != "") {
-                    name = selection;
+                String selection = dropdown.getSelectedItem().toString();
+                if (selection != "Select Star") {
                     //Will go to the next page now
-                    startActivity(new Intent(index.this, Star_Info.class));
+                    System.out.println("Selection - " + selection);
+                    Intent intent = new Intent(index.this, Star_Info.class);
+                    intent.putExtra("messageKey", selection);
+                    startActivity(intent);
+
                 } else {
                     openDialog();
                 }
@@ -76,7 +79,7 @@ public class index extends AppCompatActivity {
 
     //Will be edited later on to get the list from the API
     private void fillList() {
-        String[] items = new String[]{"", "Star 1", "Star 2", "Star 3"};
+        String[] items = new String[]{"Select Star", "Star 1", "Star 2", "Star 3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
     }
