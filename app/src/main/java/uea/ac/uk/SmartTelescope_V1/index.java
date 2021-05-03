@@ -1,5 +1,6 @@
 package uea.ac.uk.SmartTelescope_V1;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -54,10 +55,14 @@ public class index extends AppCompatActivity {
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Star fake = new Star();
-                Context context = null;
-                System.out.println(fake.readFromFile(context, "star1"));
+                String name= null;
+                if(selection != null ) {
+                    name = selection;
+                } else  {
+                    openDialog();
+                }
                 //Will go to the next page now
+                startActivity(new Intent(index.this, Star_Info.class));
             }
         });
 
@@ -82,5 +87,10 @@ public class index extends AppCompatActivity {
         String[] items = new String[]{"Star 1", "Star 2", "Star 3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
+    }
+
+    public void openDialog(){
+        dialogClass dialog1 = new dialogClass();
+        dialog1.show(getSupportFragmentManager(), "example dialog");
     }
 }

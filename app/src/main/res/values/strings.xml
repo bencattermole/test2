@@ -21,5 +21,7 @@
     <string name="intro2">Turn in the plain of the ground and then face upwards</string>
     <string name="dropDown">Click here for list of Stars</string>
     <string name="Previous">Previous Searches</string>
+    <string name="star_information_page">Star - Information Page</string>
+    <string name="go_back">Go Back</string>
 
 </resources>
