@@ -46,30 +46,22 @@ public class index extends AppCompatActivity {
         select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println(selection);
-                //Will go to the next page now
-            }
-        });
-
-        test = findViewById(R.id.testStar);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name= null;
-                if(selection != null ) {
+                String name = null;
+                if (selection != "") {
                     name = selection;
-                } else  {
+                    //Will go to the next page now
+                    startActivity(new Intent(index.this, Star_Info.class));
+                } else {
                     openDialog();
                 }
-                //Will go to the next page now
-                startActivity(new Intent(index.this, Star_Info.class));
+
             }
         });
-
     }
 
+
     //Get GMT time according to phone
-    private void getGMTtime(){
+    private void getGMTtime() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("HH:mm:ss a");
@@ -83,13 +75,13 @@ public class index extends AppCompatActivity {
     }
 
     //Will be edited later on to get the list from the API
-    private void fillList(){
-        String[] items = new String[]{"Star 1", "Star 2", "Star 3"};
+    private void fillList() {
+        String[] items = new String[]{"", "Star 1", "Star 2", "Star 3"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
     }
 
-    public void openDialog(){
+    public void openDialog() {
         dialogClass dialog1 = new dialogClass();
         dialog1.show(getSupportFragmentManager(), "example dialog");
     }
