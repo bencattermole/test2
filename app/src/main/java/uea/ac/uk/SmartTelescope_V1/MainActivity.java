@@ -92,6 +92,12 @@ public class MainActivity extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_main);//Layout loaded from activity_main.html
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        Bundle extras = getIntent().getExtras();
+
+        String[] str = extras.getStringArray("moving");
+
+        System.out.println("Intent extras test" + str[0]);
+
         //Test Lat and Long and time
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         testLatEditText = findViewById(R.id.testLat);
