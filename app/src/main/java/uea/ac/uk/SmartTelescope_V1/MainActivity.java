@@ -5,11 +5,15 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -23,14 +27,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import java.lang.Math;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
-public class MainActivity extends Activity implements SensorEventListener {
+public class MainActivity extends Activity implements LocationListener, SensorEventListener {
     private SensorManager sensorManager;
 
     //Test section
@@ -98,6 +107,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         System.out.println("Intent extras test" + str[0]);
 
+        getLocation();
+
         //Test Lat and Long and time
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         testLatEditText = findViewById(R.id.testLat);
@@ -110,6 +121,14 @@ public class MainActivity extends Activity implements SensorEventListener {
                 startActivity(new Intent(MainActivity.this, index.class));
             }
         });
+
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            }, 100);
+        }
+
 
         //
 
@@ -137,7 +156,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         LHA = 0;
         dummyAlt = 0;
 
-        getLongAndLat();
+//        getLongAndLat();
         getGMTtime();
     }
 
@@ -160,42 +179,39 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
     }
 
-    private void changePage() {
 
-    }
-
-    private void getLongAndLat() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        testLatitude = location.getLongitude();
-        testLongitude = location.getLongitude();
-
-        String lat = String.valueOf(testLatitude);
-        String longitude = String.valueOf(testLongitude);
-        System.out.println("Latiude - " + lat);
-        System.out.println("Longitude - " + longitude);
-
-
-        testLatEditText.setText(lat);
-        testLongEditText.setText(longitude);
-
-    }
+//    private void getLongAndLat() {
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        testLatitude = location.getLongitude();
+//        testLongitude = location.getLongitude();
+//
+//        String lat = String.valueOf(testLatitude);
+//        String longitude = String.valueOf(testLongitude);
+//        System.out.println("Latiude - " + lat);
+//        System.out.println("Longitude - " + longitude);
+//
+//
+//        testLatEditText.setText(lat);
+//        testLongEditText.setText(longitude);
+//
+//    }
 
     //Get GMT time according to phone
     private void getGMTtime() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         Date currentLocalTime = cal.getTime();
         DateFormat date = new SimpleDateFormat("HH:mm:ss a");
-// you can get seconds by adding  "...:ss" to it
+        // you can get seconds by adding  "...:ss" to it
         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
 
         String localTime = date.format(currentLocalTime);
@@ -276,7 +292,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-        getLongAndLat();
+//        getLongAndLat();
 
     }
 
@@ -287,4 +303,34 @@ public class MainActivity extends Activity implements SensorEventListener {
         sensorManager.unregisterListener(this);
         //Toast.cancel();
     }
+
+    @SuppressLint("MissingPermission")
+    public void getLocation() {
+        try {
+            locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, MainActivity.this);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        Toast.makeText(this, "" + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
+        try {
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            String address = String.valueOf(addresses.get(0).getLatitude());
+            System.out.println("Address length is - " + addresses.size());
+            testLongEditText.setText(address);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }
+
