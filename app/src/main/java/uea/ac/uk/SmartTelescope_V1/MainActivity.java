@@ -80,6 +80,7 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
     public float dummyAZTOP;
     public float dummyAZBOT;
     public float dummyAZTOT;
+    public float GTime;
     public double degreeCONV = (Math.PI / 180);
     public String RaFirst;
     public String RaSecond;
@@ -105,14 +106,17 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
 
         String[] str = extras.getStringArray("moving");
 
-        System.out.println("Intent extras test" + str[0]);
+//        System.out.println("Intent extras test" + str[0]);
 
-        getLocation();
 
         //Test Lat and Long and time
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         testLatEditText = findViewById(R.id.testLat);
         testLongEditText = findViewById(R.id.testLong);
+
+        getLocation();
+
+
         GMTtime = findViewById(R.id.gmt);
         button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -180,43 +184,28 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
     }
 
 
-//    private void getLongAndLat() {
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//        testLatitude = location.getLongitude();
-//        testLongitude = location.getLongitude();
-//
-//        String lat = String.valueOf(testLatitude);
-//        String longitude = String.valueOf(testLongitude);
-//        System.out.println("Latiude - " + lat);
-//        System.out.println("Longitude - " + longitude);
-//
-//
-//        testLatEditText.setText(lat);
-//        testLongEditText.setText(longitude);
-//
-//    }
-
     //Get GMT time according to phone
-    private void getGMTtime() {
+    private String getGMTtime() {
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT+1:00"));
         Date currentLocalTime = cal.getTime();
-        DateFormat date = new SimpleDateFormat("HH:mm:ss a");
+        DateFormat date = new SimpleDateFormat("HH:mm:ss");
         // you can get seconds by adding  "...:ss" to it
         date.setTimeZone(TimeZone.getTimeZone("GMT+1:00"));
 
         String localTime = date.format(currentLocalTime);
+        String converted = convertTime(localTime);
+        String finalConverted = decimalTime(converted);
 
-        GMTtime.setText(localTime);
+        GMTtime.setText(converted);
+
+//        System.out.println("Converted Original Time - " + converted);
+//        System.out.println("Final Converted Time - " + finalConverted);
+
+
+
+//        System.out.println("Testing decimal conversion - " + decimalTime(converted));
+
+        return finalConverted;
 
     }
 
@@ -243,8 +232,14 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         DECSecond = DECcEditText.getText().toString();
         DECThird = DECccEditText.getText().toString();
 
-        Latitude = LatitudeEditText.getText().toString();
-        Longitude = LongitudeEditText.getText().toString();
+        Latitude = String.valueOf(testLatitude);
+        Longitude = String.valueOf(testLongitude);
+        String gettingTime = getGMTtime();
+
+        GTime = Float.parseFloat(gettingTime);
+
+//        Latitude = LatitudeEditText.getText().toString();
+//        Longitude = LongitudeEditText.getText().toString();
         GMST = GMSTEditText.getText().toString();
 
         if (RaFirst.compareTo("") != 0 && RaSecond.compareTo("") != 0 && RaThird.compareTo("") != 0) {
@@ -322,9 +317,11 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         try {
             Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            String address = String.valueOf(addresses.get(0).getLatitude());
-            System.out.println("Address length is - " + addresses.size());
-            testLongEditText.setText(address);
+            String latitude = String.valueOf(addresses.get(0).getLatitude());
+            String longitude = String.valueOf(addresses.get(0).getLongitude());
+//            System.out.println("Address length is - " + addresses.size());
+            testLongEditText.setText(latitude);
+            testLatEditText.setText(longitude);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -332,5 +329,47 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
 
     }
 
+    public String convertTime(String gmtTime) {
+        String conversion = new String();
+        for (int i = 0; i < gmtTime.length(); i++) {
+            if (gmtTime.charAt(i) == ':') {
+                conversion = gmtTime.replace(gmtTime.charAt(i), ' ');
+            }
+        }
+
+        String strNew = conversion.replace(" ", "");
+//        System.out.println("Changed String " + strNew);
+        return strNew;
+//        gmtTime.replace(":", "");
+
+    }
+
+
+    //This method gets the decimal version of the time for the equation
+    public String decimalTime(String gmtTime) {
+        String removingFirst;
+        String removingSpace;
+        String hours = gmtTime.substring(0, 2);
+        String minutes = gmtTime.substring(2, 4);
+        Float convert = Float.parseFloat(minutes);
+        Float calc = convert / 60;
+
+//        System.out.println("hours is - " + hours);
+//        System.out.println("Convert is - " + convert);
+//        System.out.println("Calc is - " + calc);
+
+        String convertedMins = String.valueOf(calc);
+        removingFirst = convertedMins.replace(convertedMins.charAt(0), ' ');
+        removingSpace = removingFirst.trim();
+//        System.out.println("New Coverted Mins - " + removingSpace);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(hours);
+        stringBuilder.append(removingSpace);
+
+        String newTime = stringBuilder.toString();
+
+        return newTime;
+    }
 }
 
