@@ -3,26 +3,19 @@ package uea.ac.uk.SmartTelescope_V1;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-
-import java.text.DateFormat;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
-
-import android.app.Activity;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,7 +26,9 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import java.lang.Math;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -102,11 +97,10 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         setContentView(R.layout.activity_main);//Layout loaded from activity_main.html
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        //Getting the star information
         Bundle extras = getIntent().getExtras();
-
         String[] str = extras.getStringArray("moving");
 
-//        System.out.println("Intent extras test" + str[0]);
 
 
         //Test Lat and Long and time
@@ -287,8 +281,6 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-//        getLongAndLat();
-
     }
 
     @Override
@@ -296,9 +288,9 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
 
         super.onPause();
         sensorManager.unregisterListener(this);
-        //Toast.cancel();
     }
 
+    //Getting the location
     @SuppressLint("MissingPermission")
     public void getLocation() {
         try {
@@ -329,6 +321,7 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
 
     }
 
+    //Convert the time from a string to a string with no colons
     public String convertTime(String gmtTime) {
         String conversion = new String();
         for (int i = 0; i < gmtTime.length(); i++) {
@@ -349,20 +342,20 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
     public String decimalTime(String gmtTime) {
         String removingFirst;
         String removingSpace;
+        //Gets the sub-strings for minutes and seconds
         String hours = gmtTime.substring(0, 2);
         String minutes = gmtTime.substring(2, 4);
         Float convert = Float.parseFloat(minutes);
+        //Turning the minutes into a decimal
         Float calc = convert / 60;
 
-//        System.out.println("hours is - " + hours);
-//        System.out.println("Convert is - " + convert);
-//        System.out.println("Calc is - " + calc);
 
         String convertedMins = String.valueOf(calc);
         removingFirst = convertedMins.replace(convertedMins.charAt(0), ' ');
         removingSpace = removingFirst.trim();
 //        System.out.println("New Coverted Mins - " + removingSpace);
 
+        //Create the string to be used for calculations
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(hours);
         stringBuilder.append(removingSpace);

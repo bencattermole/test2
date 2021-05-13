@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat;
 import java.util.List;
 import java.util.Locale;
 
+//This class gets the user location and guides them to true north
 public class User_Location extends AppCompatActivity implements LocationListener, SensorEventListener {
     private TextView currentLat;
     private TextView currentLong;
@@ -49,8 +50,8 @@ public class User_Location extends AppCompatActivity implements LocationListener
         setContentView(R.layout.activity_user_location);
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+        //This gets the list of star information from the Star_Info page
         Bundle extras = getIntent().getExtras();
-
         String[] str = extras.getStringArray("moving");
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -58,6 +59,7 @@ public class User_Location extends AppCompatActivity implements LocationListener
         currentLong = findViewById(R.id.CurrentLong);
         currentAddress = findViewById(R.id.compass_address);
 
+        //Calling get location which will fill out the above lines
         getLocation();
 
         goBack = findViewById(R.id.back);
@@ -68,13 +70,14 @@ public class User_Location extends AppCompatActivity implements LocationListener
 
         goForward = findViewById(R.id.cont);
         goForward.setOnClickListener(v -> {
-            //This sends the star information to the Calculations page
+            //This sends the star information to the next page
             Intent intent = new Intent(User_Location.this, MainActivity.class);
             intent.putExtra("moving", str);
             startActivity(intent);
 
         });
 
+        //Permission needed to get the actual location
         if (ContextCompat.checkSelfPermission(User_Location.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(User_Location.this, new String[]{
@@ -84,6 +87,7 @@ public class User_Location extends AppCompatActivity implements LocationListener
 
     }
 
+    //Method to get the location using Location Manager
     @SuppressLint("MissingPermission")
     public void getLocation() {
         try {
@@ -97,10 +101,12 @@ public class User_Location extends AppCompatActivity implements LocationListener
     }
 
 
+    //This update the location
     public void onLocationChanged(@NonNull Location location) {
         Toast.makeText(this, "" + location.getLatitude() + "," + location.getLongitude(), Toast.LENGTH_SHORT).show();
         try {
             Geocoder geocoder = new Geocoder(User_Location.this, Locale.getDefault());
+            //Calling the GPS and getting the longitude and latitude. Can get the address if you want
             List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
             String latitude = String.valueOf(addresses.get(0).getLatitude());
             String longitude = String.valueOf(addresses.get(0).getLongitude());
@@ -117,12 +123,19 @@ public class User_Location extends AppCompatActivity implements LocationListener
     }
 
 
+    //This is the compass method
     @Override
     public void onSensorChanged(SensorEvent event) {
         // get the angle around the z-axis rotated
         float degree = Math.round(event.values[0]);
 
+        //This is the field above the compass telling them what angle they are
         currentAddress.setText("Heading: " + String.valueOf(degree) + " degrees");
+        //If they are facing true north
+        if (degree == 0.0) {
+            //Call the dialog screen
+            openDialog();
+        }
 
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation ra = new RotateAnimation(
@@ -154,5 +167,11 @@ public class User_Location extends AppCompatActivity implements LocationListener
         super.onResume();
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    //This sends the dialog if the user is facing true north
+    public void openDialog() {
+        dialogClass2 dialog1 = new dialogClass2();
+        dialog1.show(getSupportFragmentManager(), "example dialog");
     }
 }
