@@ -24,4 +24,8 @@
     <string name="star_information_page">Star - Information Page</string>
     <string name="go_back">Go Back</string>
 
+    <string name="Star_Info_Intro">This page will show you the information of your selected star</string>
+    <string name="User_Location_Info">The next page will show you your current location and then
+        guide you to true north before guiding you to the star</string>
+
 </resources>

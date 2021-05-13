@@ -63,7 +63,8 @@ public class Star_Info extends AppCompatActivity {
         cont.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Star_Info.this, MainActivity.class);
+                //This sends the star information to the Calculations page
+                Intent intent = new Intent(Star_Info.this, User_Location.class);
                 String[] sending = new String[3];
                 sending[0] = a;
                 sending[1] = b;
