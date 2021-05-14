@@ -123,7 +123,7 @@ public class Star_Info extends AppCompatActivity {
         c = info[2];
 
         starName.setText("The Name of this star is " + a);
-        starAz.setText("The Azimuth of this star is " + b);
+        starAz.setText("The Right Acension (RA) of this star is " + b);
         starDec.setText("The Declination of this star is " + c);
     }
 };

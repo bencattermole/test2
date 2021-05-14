@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.security.KeyStore;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,6 +45,12 @@ public class Directing extends AppCompatActivity implements LocationListener, Se
     private Button reverse;
     private Button goAhead;
     private LocationManager locationManager;
+    public double degreeCONV = (Math.PI / 180);
+    public float LHA;
+    public float dummyAlt;
+    public float dummyAZTOP;
+    public float dummyAZBOT;
+    public float dummyAZTOT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,22 +175,132 @@ public class Directing extends AppCompatActivity implements LocationListener, Se
         return finalConverted;
 
     }
+// the gmst value should be in decimal hours, e.g 10:30 will be 10.5
+    // if you convert it to seconds first, (hours*60*60 + minutes*60 + seconds) then divide by 60 twice so ((seconds)/60)/60 you will be in decimal hours
+    //********************************************************************************************************************
+    //converting each into the correct units for the equation, they have the form RA hh:mm:ss and DEC dd:mm:ss on the websites
+    //so from the .txt files you could store it as theStarName,RAhours,RAminutes,RAseconds,DECdegrees,DECarcMinutes,DECarcSeconds . Im not sure how to do this
+    private String RAcorrUNITS(String RAhours, String RAminutes, String RAseconds) {
+        float RAdeg = (float) (Float.parseFloat(RAhours) * 15 + Float.parseFloat(RAminutes) / 4 + Float.parseFloat(RAseconds) * 0.00416);
+        return Float.toString(RAdeg);
+        //to get RA in units of degrees for calculations, 24hrs equates to a 360 degree turn
+    }
 
-    //Your equations, they need to be edited to work with this page
-    //Call the RA and DEC from the intent (Star Info page)
-    //Call the GMT time from the method above
+    private String DECcorrUNITS(String DECdegrees, String DECarcMinutes, String DECarcSeconds){
+        float DECdeg = (float) (Float.parseFloat(DECdegrees) + Float.parseFloat(DECarcMinutes) * 0.016 + Float.parseFloat(DECarcSeconds) * 0.00027);
+        return Float.toString(DECdeg);
+        //to get DEC in units of degrees only for calculation, the two multiplication numbers should have a recurring final digit
+    }
 
+    //********************************************************************************************************************
+    // calcAlt and calcAzi take in the current latitude and current longitude as well as the Right acension and Declination value
+    private String calcAlt(float currentlat, float currentlong) {
+        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
+        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
+        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
+             LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
+           } else {
+             LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
+            }
+            //degreeCONV converts the math.sin functions from radians to degrees
+            // degree conv is pi/180
+           dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
+           return Float.toString((float) ((Math.asin(dummyAlt) / degreeCONV))));
+    }
+
+    //they return the string of the Altitude or the string of the Azimuth
+    private String calcAzi(float currentlat, float currentlong) {
+        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
+        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
+        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
+            LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
+        } else {
+            LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
+        }
+        //degreeCONV converts the math.sin functions from radians to degrees
+        // degree conv is pi/180
+        dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(DEC* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
+
+        dummyAZTOP = (float) (Math.sin(DEC * degreeCONV) - (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin((Math.asin(dummyAlt) / degreeCONV) * degreeCONV)));
+        dummyAZBOT = (float) (Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos((Math.asin(dummyAlt) / degreeCONV) * degreeCONV));
+        dummyAZTOT = dummyAZTOP / dummyAZBOT;
+       return Float.toString((float) (Math.acos(dummyAZTOT) / degreeCONV)));
+    }
+
+   private void guidance(float valueGuidedTo, boolean lookingFORAzi){
+     //my idea is to have three coloured blocks, [     ] [ ] [     ], for both values
+       // intially all would start at red and the block "you are currently in" would be green
+       // say x is the value you want to turn to the middle block would be green when your current position (p) are x-10 <= p <= x+10
+       // for the outer two it would be LEFT: x-30 <= p < x-10 and RIGHT: x+10 < p <= x+30
+       //
+       //This may have to be split into two methods im not sure
+       //difference between when guiding for azimuth and alititude will be if our current position is the value of the first element in the orientation sensor output array or the second one
+       // the first is for azimuth the second for alitude
+       //ill use p for current posistion
+       //********************************************************************************************
+       //Need correction for if the value being guided to is close to 360 degrees or zero degrees as there is overlap
+       float x = valueGuidedTo;
+       if (x + 10 >= 360){
+           
+       }else if(x-10 <= 0){
+
+       }
+       //********************************************************************************************
+       if (lookingFORAzi = true) {
+           //so here p = orientationSensor.array[0]
+           if (x-30 <= p < x-10) {
+               leftBlock.setcolour(GREEN);
+                       // I dont know how to do coloured squares :(
+           } else {
+               leftBlock.setcolour(RED);
+           }
+
+           if (x-10 <= p <= x+10) {
+               leftBlock.setcolour(GREEN);
+           } else {
+               leftBlock.setcolour(RED);
+           }
+
+           if (x+10 < p <= x+30) {
+               leftBlock.setcolour(GREEN);
+           } else {
+               leftBlock.setcolour(RED);
+           }
+       }
+
+       if (lookingFORAzi = false){
+           //so here p = orientationSensor.array[1]
+           if (x-30 <= p < x-10) {
+               leftBlock.setcolour(GREEN);
+           } else {
+               leftBlock.setcolour(RED);
+           }
+
+           if (x-10 <= p <= x+10) {
+               leftBlock.setcolour(GREEN);
+           } else {
+               leftBlock.setcolour(RED);
+           }
+
+           if (x+10 < p <= x+30) {
+               leftBlock.setcolour(GREEN);
+           } else {
+               leftBlock.setcolour(RED);
+           }
+       }
+    }
+}
 //    @SuppressLint("SetTextI18n")
 //    private void getOrientation(SensorEvent event) {
 //        float[] values = event.values;
-//
-//        float o1 = values[0];
-//        float o2 = values[1] * -1;
-//        float o3 = values[2];
-//
-//        mOrientation1TextView.setText(Float.toString(o1));
-//        mOrientation2TextView.setText(Float.toString(o2));
-//        mOrientation3TextView.setText(Float.toString(o3));
+////
+////        float o1 = values[0];
+////        float o2 = values[1] * -1;
+////        float o3 = values[2];
+////
+////        mOrientation1TextView.setText(Float.toString(o1));
+////        mOrientation2TextView.setText(Float.toString(o2));
+////        mOrientation3TextView.setText(Float.toString(o3));
 //
 //        RaFirst = RAhoursEditText.getText().toString();
 //        RaSecond = RAminsEditText.getText().toString();
@@ -240,4 +357,4 @@ public class Directing extends AppCompatActivity implements LocationListener, Se
 //            Azimuth.setText(Float.toString((float) (Math.acos(dummyAZTOT) / degreeCONV)));
 //        }
 //    }
-}
+//}
