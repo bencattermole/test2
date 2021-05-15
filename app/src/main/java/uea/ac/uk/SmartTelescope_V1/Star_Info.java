@@ -91,7 +91,7 @@ public class Star_Info extends AppCompatActivity {
             txtName = "star1";
         } else if (fileName.equals("Star 2")) {
             txtName = "star2";
-        }
+        } 
         return txtName;
     }
 
