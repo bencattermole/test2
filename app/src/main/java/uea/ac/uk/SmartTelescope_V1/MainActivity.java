@@ -89,6 +89,12 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
     private TextView mOrientation1TextView;
     private TextView mOrientation2TextView;
     private TextView mOrientation3TextView;
+    private View aziL;
+    private View aziC;
+    private View aziR;
+    private View altT;
+    private View altC;
+    private View altB;
 
 
     @Override
@@ -148,6 +154,19 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         Azimuth = findViewById(R.id.Azimuth);
         //mThresholdEditText = findViewById(R.id.editTextNumberDecimal);
         lastUpdate = System.currentTimeMillis();
+        aziL = findViewById(R.id.AziL);
+        aziC = findViewById(R.id.aziC);
+        aziR = findViewById(R.id.aziR);
+        altT = findViewById(R.id.altT);
+        altC = findViewById(R.id.altC);
+        altB = findViewById(R.id.altB);
+
+        aziL.setBackgroundColor(Color.RED);
+        aziC.setBackgroundColor(Color.RED);
+        aziR.setBackgroundColor(Color.RED);
+        altT.setBackgroundColor(Color.RED);
+        altC.setBackgroundColor(Color.RED);
+        altB.setBackgroundColor(Color.RED);
 
         RAsecs = 0;
         DECsecs = 0;
@@ -263,6 +282,7 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         if (DECsecs != 0 && Latitude.compareTo("") != 0 && LHA != 0) {
             dummyAlt = (float) (Math.sin(Float.parseFloat(Latitude) * degreeCONV) * Math.sin(DECsecs * degreeCONV) + Math.cos(Float.parseFloat(Latitude) * degreeCONV) * Math.cos(DECsecs * degreeCONV) * Math.cos(LHA * degreeCONV));
             Altitude.setText(Float.toString((float) ((Math.asin(dummyAlt) / degreeCONV))));
+            guidancealt(((float) ((Math.asin(dummyAlt)/degreeCONV))), event);
             //
         }
 
@@ -271,6 +291,7 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
             dummyAZBOT = (float) (Math.cos(Float.parseFloat(Latitude) * degreeCONV) * Math.cos((Math.asin(dummyAlt) / degreeCONV) * degreeCONV));
             dummyAZTOT = dummyAZTOP / dummyAZBOT;
             Azimuth.setText(Float.toString((float) (Math.acos(dummyAZTOT) / degreeCONV)));
+            guidanceazi(((float) (Math.acos(dummyAZTOT)/degreeCONV)), event);
         }
     }
 
