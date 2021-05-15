@@ -274,6 +274,115 @@ public class MainActivity extends Activity implements LocationListener, SensorEv
         }
     }
 
+
+    private void guidancealt(float valueGuidedTo, SensorEvent event) {
+
+        float[] values = event.values;
+        float o1 = values[0];
+        float o2 = values[1] * -1;
+        float o3 = values[2];
+
+        if (valueGuidedTo-30 <= o2 && o2 < valueGuidedTo-10) {
+            altT.setBackgroundColor(Color.GREEN);
+            // I dont know how to do coloured squares :(
+        } else {
+            altT.setBackgroundColor(Color.RED);
+            System.out.println(valueGuidedTo);
+        }
+
+        //fringe case for if its near 0
+        // if (valueGuidedTo+360-30 <= o2 && o2 < valueGuidedTo+360-10) {
+        // altT.setBackgroundColor(Color.GREEN);
+        // I dont know how to do coloured squares :(
+        // } else {
+        //altT.setBackgroundColor(Color.RED);
+        //}
+
+        if (valueGuidedTo-10 <= o2 && o2 <= valueGuidedTo+10) {
+            altC.setBackgroundColor(Color.GREEN);
+        } else {
+            altC.setBackgroundColor(Color.RED);
+        }
+
+        // fringe case for middle where could be 0 or 360
+        //if (valueGuidedTo+360-10 <= o2 && o2 <= valueGuidedTo-360+10) {
+        // altC.setBackgroundColor(Color.GREEN);
+        //} else {
+        //  altC.setBackgroundColor(Color.RED);
+        //}
+
+        if (valueGuidedTo+10 < o2 && o2 <= valueGuidedTo+30) {
+            altB.setBackgroundColor(Color.GREEN);
+        } else {
+            altB.setBackgroundColor(Color.RED);
+        }
+
+        //fringe case for when x is 360
+        //if (valueGuidedTo-360+10 < o2 && o2 <= valueGuidedTo-360+30) {
+        //  altB.setBackgroundColor(Color.GREEN);
+        //} else {
+        //  altB.setBackgroundColor(Color.GREEN);
+        //}
+    }
+
+    private void guidanceazi(float valueGuidedTo, SensorEvent event){
+        //my idea is to have three coloured blocks, [     ] [ ] [     ], for both values
+        // intially all would start at red and the block "you are currently in" would be green
+        // say x is the value you want to turn to the middle block would be green when your current position (p) are x-10 <= p <= x+10
+        // for the outer two it would be LEFT: x-30 <= p < x-10 and RIGHT: x+10 < p <= x+30
+        //
+        //This may have to be split into two methods im not sure
+        //difference between when guiding for azimuth and alititude will be if our current position is the value of the first element in the orientation sensor output array or the second one
+        // the first is for azimuth the second for alitude
+        //ill use p for current posistion
+        float[] values = event.values;
+        float o1 = values[0];
+        float o2 = values[1] * -1;
+        float o3 = values[2];
+
+        //so here p = orientationSensor.array[0]
+        if (valueGuidedTo-30 <= o1 &&  o1 < valueGuidedTo-10) {
+            aziL.setBackgroundColor(Color.GREEN);
+            // I dont know how to do coloured squares :(
+        } else {
+            aziL.setBackgroundColor(Color.RED);
+        }
+
+        //fringe case for if its near 0
+        //if (valueGuidedTo+360-30 <= o1 && o1< valueGuidedTo+360-10) {
+        //aziL.setBackgroundColor(Color.GREEN);
+        // I dont know how to do coloured squares :(
+        //} else {
+        //  aziL.setBackgroundColor(Color.RED);
+        //}
+
+        if (valueGuidedTo-10 <= o1 && o1 <= valueGuidedTo+10) {
+            aziC.setBackgroundColor(Color.GREEN);
+        } else {
+            aziC.setBackgroundColor(Color.RED);
+        }
+
+        // fringe case for middle where could be 0 or 360
+        //if (valueGuidedTo+360-10 <= o1 && o1 <= valueGuidedTo-360+10) {
+        //   aziC.setBackgroundColor(Color.GREEN);
+        //} else {
+        //  aziC.setBackgroundColor(Color.GREEN);
+        //}
+
+        if (valueGuidedTo+10 < o1 && o1<= valueGuidedTo+30) {
+            aziR.setBackgroundColor(Color.GREEN);
+        } else {
+            aziR.setBackgroundColor(Color.RED);
+        }
+
+        //fringe case for when x is 360
+        //if (valueGuidedTo-360+10 < o1 && o1 <= valueGuidedTo-360+30) {
+        //  aziR.setBackgroundColor(Color.GREEN);
+        //} else {
+        // aziR.setBackgroundColor(Color.GREEN);
+        //}
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
