@@ -27,5 +27,7 @@
     <string name="Star_Info_Intro">This page will show you the information of your selected star</string>
     <string name="User_Location_Info">The next page will show you your current location and then
         guide you to true north before guiding you to the star</string>
+    <string name="create_new_star">Create New Star</string>
+    <string name="newStarInfo">This page will allow you to create a new star. Please enter the Right Declination and the Azimuth of the star as well as the name. The app will direct you to this star once it has been saved on your device.</string>
 
 </resources>

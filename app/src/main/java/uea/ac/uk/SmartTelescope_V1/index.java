@@ -23,7 +23,7 @@ public class index extends AppCompatActivity {
     private TextView GMTtime;
     private Spinner dropdown;
     private Button select;
-    private Button test;
+    private Button newStar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,15 @@ public class index extends AppCompatActivity {
                     openDialog();
                 }
 
+            }
+        });
+
+        newStar = findViewById(R.id.createNew);
+        newStar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(index.this, newStar.class);
+                startActivity(intent);
             }
         });
     }

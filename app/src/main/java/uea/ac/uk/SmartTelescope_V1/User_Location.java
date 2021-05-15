@@ -132,10 +132,10 @@ public class User_Location extends AppCompatActivity implements LocationListener
         //This is the field above the compass telling them what angle they are
         currentAddress.setText("Heading: " + String.valueOf(degree) + " degrees");
         //If they are facing true north
-        if (degree == 0.0) {
-            //Call the dialog screen
-            openDialog();
-        }
+//        if (degree == 0.0) {
+//            //Call the dialog screen
+//            openDialog();
+//        }
 
         // create a rotation animation (reverse turn degree degrees)
         RotateAnimation ra = new RotateAnimation(

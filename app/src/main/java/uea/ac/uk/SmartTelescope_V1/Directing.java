@@ -194,101 +194,101 @@ public class Directing extends AppCompatActivity implements LocationListener, Se
 
     //********************************************************************************************************************
     // calcAlt and calcAzi take in the current latitude and current longitude as well as the Right acension and Declination value
-    private String calcAlt(float currentlat, float currentlong) {
-        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
-        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
-        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
-             LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
-           } else {
-             LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
-            }
-            //degreeCONV converts the math.sin functions from radians to degrees
-            // degree conv is pi/180
-           dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
-           return Float.toString((float) ((Math.asin(dummyAlt) / degreeCONV))));
-    }
+//    private String calcAlt(float currentlat, float currentlong) {
+//        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
+//        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
+//        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
+//             LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
+//           } else {
+//             LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
+//            }
+//            //degreeCONV converts the math.sin functions from radians to degrees
+//            // degree conv is pi/180
+//           dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
+//           return Float.toString((float) ((Math.asin(dummyAlt) / degreeCONV))));
+//    }
 
     //they return the string of the Altitude or the string of the Azimuth
-    private String calcAzi(float currentlat, float currentlong) {
-        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
-        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
-        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
-            LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
-        } else {
-            LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
-        }
-        //degreeCONV converts the math.sin functions from radians to degrees
-        // degree conv is pi/180
-        dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(DEC* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
-
-        dummyAZTOP = (float) (Math.sin(DEC * degreeCONV) - (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin((Math.asin(dummyAlt) / degreeCONV) * degreeCONV)));
-        dummyAZBOT = (float) (Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos((Math.asin(dummyAlt) / degreeCONV) * degreeCONV));
-        dummyAZTOT = dummyAZTOP / dummyAZBOT;
-       return Float.toString((float) (Math.acos(dummyAZTOT) / degreeCONV)));
-    }
-
-   private void guidance(float valueGuidedTo, boolean lookingFORAzi){
-     //my idea is to have three coloured blocks, [     ] [ ] [     ], for both values
-       // intially all would start at red and the block "you are currently in" would be green
-       // say x is the value you want to turn to the middle block would be green when your current position (p) are x-10 <= p <= x+10
-       // for the outer two it would be LEFT: x-30 <= p < x-10 and RIGHT: x+10 < p <= x+30
-       //
-       //This may have to be split into two methods im not sure
-       //difference between when guiding for azimuth and alititude will be if our current position is the value of the first element in the orientation sensor output array or the second one
-       // the first is for azimuth the second for alitude
-       //ill use p for current posistion
-       //********************************************************************************************
-       //Need correction for if the value being guided to is close to 360 degrees or zero degrees as there is overlap
-       float x = valueGuidedTo;
-       if (x + 10 >= 360){
-           
-       }else if(x-10 <= 0){
-
-       }
-       //********************************************************************************************
-       if (lookingFORAzi = true) {
-           //so here p = orientationSensor.array[0]
-           if (x-30 <= p < x-10) {
-               leftBlock.setcolour(GREEN);
-                       // I dont know how to do coloured squares :(
-           } else {
-               leftBlock.setcolour(RED);
-           }
-
-           if (x-10 <= p <= x+10) {
-               leftBlock.setcolour(GREEN);
-           } else {
-               leftBlock.setcolour(RED);
-           }
-
-           if (x+10 < p <= x+30) {
-               leftBlock.setcolour(GREEN);
-           } else {
-               leftBlock.setcolour(RED);
-           }
-       }
-
-       if (lookingFORAzi = false){
-           //so here p = orientationSensor.array[1]
-           if (x-30 <= p < x-10) {
-               leftBlock.setcolour(GREEN);
-           } else {
-               leftBlock.setcolour(RED);
-           }
-
-           if (x-10 <= p <= x+10) {
-               leftBlock.setcolour(GREEN);
-           } else {
-               leftBlock.setcolour(RED);
-           }
-
-           if (x+10 < p <= x+30) {
-               leftBlock.setcolour(GREEN);
-           } else {
-               leftBlock.setcolour(RED);
-           }
-       }
-    }
+//    private String calcAzi(float currentlat, float currentlong) {
+//        float DEC = Float.parseFloat(DECcorrUNITS(value1,value2,value3));
+//        float RA  = Float.parseFloat(RAcorrUNITS(value1,value2,value3));
+//        if (Float.parseFloat(getGMTtime()) * 15 <= 180) {
+//            LHA = Float.parseFloat(getGMTtime()) * 15 + 180 + Float.parseFloat(currentlong);
+//        } else {
+//            LHA = Float.parseFloat(getGMTtime()) * 15 - 180 + Float.parseFloat(currentlong);
+//        }
+//        //degreeCONV converts the math.sin functions from radians to degrees
+//        // degree conv is pi/180
+//        dummyAlt = (float) (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin(DEC* degreeCONV) + Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos(DEC * degreeCONV) * Math.cos(LHA * degreeCONV));
+//
+//        dummyAZTOP = (float) (Math.sin(DEC * degreeCONV) - (Math.sin(Float.parseFloat(currentlat) * degreeCONV) * Math.sin((Math.asin(dummyAlt) / degreeCONV) * degreeCONV)));
+//        dummyAZBOT = (float) (Math.cos(Float.parseFloat(currentlat) * degreeCONV) * Math.cos((Math.asin(dummyAlt) / degreeCONV) * degreeCONV));
+//        dummyAZTOT = dummyAZTOP / dummyAZBOT;
+//       return Float.toString((float) (Math.acos(dummyAZTOT) / degreeCONV)));
+//    }
+//
+//   private void guidance(float valueGuidedTo, boolean lookingFORAzi){
+//     //my idea is to have three coloured blocks, [     ] [ ] [     ], for both values
+//       // intially all would start at red and the block "you are currently in" would be green
+//       // say x is the value you want to turn to the middle block would be green when your current position (p) are x-10 <= p <= x+10
+//       // for the outer two it would be LEFT: x-30 <= p < x-10 and RIGHT: x+10 < p <= x+30
+//       //
+//       //This may have to be split into two methods im not sure
+//       //difference between when guiding for azimuth and alititude will be if our current position is the value of the first element in the orientation sensor output array or the second one
+//       // the first is for azimuth the second for alitude
+//       //ill use p for current posistion
+//       //********************************************************************************************
+//       //Need correction for if the value being guided to is close to 360 degrees or zero degrees as there is overlap
+//       float x = valueGuidedTo;
+//       if (x + 10 >= 360){
+//
+//       }else if(x-10 <= 0){
+//
+//       }
+//       //********************************************************************************************
+//       if (lookingFORAzi = true) {
+//           //so here p = orientationSensor.array[0]
+//           if (x-30 <= p < x-10) {
+//               leftBlock.setcolour(GREEN);
+//                       // I dont know how to do coloured squares :(
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//
+//           if (x-10 <= p <= x+10) {
+//               leftBlock.setcolour(GREEN);
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//
+//           if (x+10 < p <= x+30) {
+//               leftBlock.setcolour(GREEN);
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//       }
+//
+//       if (lookingFORAzi = false){
+//           //so here p = orientationSensor.array[1]
+//           if (x-30 <= p < x-10) {
+//               leftBlock.setcolour(GREEN);
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//
+//           if (x-10 <= p <= x+10) {
+//               leftBlock.setcolour(GREEN);
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//
+//           if (x+10 < p <= x+30) {
+//               leftBlock.setcolour(GREEN);
+//           } else {
+//               leftBlock.setcolour(RED);
+//           }
+//       }
+//    }
 }
 //    @SuppressLint("SetTextI18n")
 //    private void getOrientation(SensorEvent event) {

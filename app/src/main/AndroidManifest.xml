@@ -14,7 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Shake2021">
-        <activity android:name=".Directing"></activity>
+        <activity android:name=".newStar"></activity>
+        <activity android:name=".Directing" />
         <activity android:name=".User_Location" />
         <activity android:name=".Star_Info" />
         <activity android:name=".MainActivity" />
